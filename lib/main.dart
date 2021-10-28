@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jump_mounish/mouni.dart';
 
 void main() {
   runApp(MyApp());
@@ -29,15 +30,17 @@ class _HomePageState extends State<HomePage> {
       body: Column(
         children: [
           Expanded(
+            flex: 2,
             child: Container(
               color: Colors.black,
+              child: Center(child: Mouni()),
             ),
           ),
           Expanded(
             child: Container(
               color: Colors.white,
             ),
-          )
+          ),
         ],
       ),
     );
