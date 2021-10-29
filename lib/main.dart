@@ -27,14 +27,15 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   static double yAxis = 0;
+  final containerKey = GlobalKey();
   double score = 0;
+  int finalScore = 0;
   double height = 0;
   double inHeight = yAxis;
   bool gameInSession = false;
   double x1 = 0.2;
-  double x2 = 0.2;
-  double x3 = 1;
-  double x4 = 1;
+  double x3 = 1.0;
+  int bestScore = 0;
 
   void tap() {
     setState(() {
@@ -51,14 +52,36 @@ class _HomePageState extends State<HomePage> {
       setState(() {
         yAxis = inHeight - height;
       });
-      if (yAxis > 1) {
+      setState(() {
+        if (x1 < -1.0) {
+          finalScore++;
+          x1 += 2.0;
+        } else {
+          x1 -= 0.05;
+        }
+        if (x3 < -1.1) {
+          finalScore++;
+          x3 += 2.0;
+        } else {
+          x3 -= 0.05;
+        }
+      });
+
+      if (yAxis > 1 || yAxis > 0.3 || yAxis < -0.5) {
         timer.cancel();
         setState(() {
+          print(finalScore);
+          if (finalScore > bestScore) {
+            bestScore = finalScore;
+          }
+          finalScore = 0;
           gameInSession = false;
           yAxis = 0;
           inHeight = yAxis;
           score = 0;
           height = 0;
+          x1 = 0.2;
+          x3 = 1;
         });
       }
     });
@@ -99,6 +122,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                 ),
                 AnimatedContainer(
+                  key: containerKey,
                   alignment: Alignment(x1, -1),
                   duration: Duration(milliseconds: 0),
                   child: Barrier(
@@ -106,33 +130,26 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 AnimatedContainer(
-                  alignment: Alignment(x2, 1),
-                  duration: Duration(milliseconds: 0),
-                  child: Barrier(
-                    size: 100.0,
-                  ),
-                ),
-                AnimatedContainer(
-                  alignment: Alignment(x3, -1),
+                  alignment: Alignment(x1, 1),
                   duration: Duration(milliseconds: 0),
                   child: Barrier(
                     size: 150.0,
                   ),
                 ),
                 AnimatedContainer(
-                  alignment: Alignment(x4, 1),
+                  alignment: Alignment(x3, -1),
                   duration: Duration(milliseconds: 0),
                   child: Barrier(
                     size: 100.0,
                   ),
                 ),
-                // AnimatedContainer(
-                //   alignment: Alignment(-0.7, -1),
-                //   duration: Duration(milliseconds: 0),
-                //   child: Barrier(
-                //     size: 200.0,
-                //   ),
-                // ),
+                AnimatedContainer(
+                  alignment: Alignment(x3, 1),
+                  duration: Duration(milliseconds: 0),
+                  child: Barrier(
+                    size: 150.0,
+                  ),
+                ),
               ]),
             ),
             Expanded(
@@ -151,7 +168,7 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                         Text(
-                          "0",
+                          finalScore.toString(),
                           style: TextStyle(
                             fontSize: 30,
                           ),
@@ -168,7 +185,7 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                         Text(
-                          "0",
+                          bestScore.toString(),
                           style: TextStyle(
                             fontSize: 30,
                           ),
